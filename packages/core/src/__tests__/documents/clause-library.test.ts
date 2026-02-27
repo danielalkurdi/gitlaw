@@ -26,4 +26,19 @@ describe('ClauseLibrary', () => {
     expect(list).toContain('clause-a');
     expect(list).toContain('clause-b');
   });
+
+  it('rejects clause IDs with path traversal characters', async () => {
+    const lib = new ClauseLibrary(join(dir, '.gitlaw', 'clauses'));
+    await expect(lib.add('../etc/passwd', 'malicious')).rejects.toThrow('Invalid clause ID');
+    await expect(lib.get('../../secret')).rejects.toThrow('Invalid clause ID');
+    await expect(lib.add('hello world', 'spaces')).rejects.toThrow('Invalid clause ID');
+    await expect(lib.add('a/b', 'slash')).rejects.toThrow('Invalid clause ID');
+  });
+
+  it('accepts valid clause IDs', async () => {
+    const lib = new ClauseLibrary(join(dir, '.gitlaw', 'clauses'));
+    await lib.add('valid-clause_ID_123', 'content');
+    const content = await lib.get('valid-clause_ID_123');
+    expect(content).toBe('content');
+  });
 });

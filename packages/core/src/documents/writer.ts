@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import yaml from 'js-yaml';
 import type { DocumentMeta, GitlawTracking } from './types.js';
 
@@ -12,8 +12,12 @@ export async function writeDocument(
 
   await writeFile(join(docDir, 'document.yaml'), yaml.dump(meta));
 
+  const resolvedDocDir = resolve(docDir);
   for (const [relPath, content] of sectionContents) {
-    const fullPath = join(docDir, relPath);
+    const fullPath = resolve(join(docDir, relPath));
+    if (!fullPath.startsWith(resolvedDocDir + '/') && fullPath !== resolvedDocDir) {
+      throw new Error(`Path traversal detected: ${relPath} resolves outside document directory`);
+    }
     await mkdir(dirname(fullPath), { recursive: true });
     await writeFile(fullPath, content);
   }

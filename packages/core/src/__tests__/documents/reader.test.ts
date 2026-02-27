@@ -52,4 +52,21 @@ workflow_state:
     const doc = await readDocument(docDir);
     expect(doc.tracking.audit_log_ref).toBe('refs/notes/gitlaw-audit');
   });
+
+  it('throws on path traversal in section file', async () => {
+    await writeFile(join(docDir, 'document.yaml'), `
+title: "Malicious Doc"
+type: contract
+parties:
+  - name: "Evil"
+    role: attacker
+created: "2026-02-27"
+status: draft
+sections:
+  - id: exploit
+    file: ../../etc/passwd
+`);
+
+    await expect(readDocument(docDir)).rejects.toThrow('Path traversal detected');
+  });
 });

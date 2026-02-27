@@ -21,8 +21,18 @@ export default class AuditExport extends Command {
 
     let output: string;
     if (flags.format === 'csv') {
+      const escapeCsvField = (field: string): string => {
+        let safe = field;
+        if (/^[=+\-@]/.test(safe)) {
+          safe = "'" + safe;
+        }
+        safe = safe.replace(/"/g, '""');
+        return `"${safe}"`;
+      };
       const header = 'id,timestamp,actor,event,document,commit';
-      const rows = entries.map(e => `${e.id},${e.timestamp},${e.actor},${e.event},${e.document},${e.commit}`);
+      const rows = entries.map(e =>
+        [e.id, e.timestamp, e.actor, e.event, e.document, e.commit].map(f => escapeCsvField(String(f))).join(','),
+      );
       output = [header, ...rows].join('\n');
     } else {
       output = JSON.stringify(entries, null, 2);

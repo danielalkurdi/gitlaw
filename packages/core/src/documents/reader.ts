@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import yaml from 'js-yaml';
 import type { DocumentMeta, GitlawTracking } from './types.js';
 import { parseClauses, type ParsedSection } from './clause-parser.js';
@@ -26,8 +26,13 @@ export async function readDocument(docDir: string): Promise<LoadedDocument> {
   const tracking = yaml.load(trackingRaw) as GitlawTracking;
 
   const sections: LoadedSection[] = [];
+  const resolvedDocDir = resolve(docDir);
   for (const ref of meta.sections) {
-    const raw = await readFile(join(docDir, ref.file), 'utf-8');
+    const sectionPath = resolve(join(docDir, ref.file));
+    if (!sectionPath.startsWith(resolvedDocDir + '/') && sectionPath !== resolvedDocDir) {
+      throw new Error(`Path traversal detected: ${ref.file} resolves outside document directory`);
+    }
+    const raw = await readFile(sectionPath, 'utf-8');
     const parsed = parseClauses(raw);
     sections.push({ id: ref.id, file: ref.file, raw, parsed });
   }
