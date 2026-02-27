@@ -1,0 +1,29 @@
+{
+  "name": "@gitlaw/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "gitlaw": "./bin/run.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@gitlaw/core": "workspace:*",
+    "@oclif/core": "^4"
+  },
+  "devDependencies": {
+    "vitest": "^3",
+    "typescript": "^5"
+  },
+  "oclif": {
+    "bin": "gitlaw",
+    "dirname": "gitlaw",
+    "commands": "./dist/commands",
+    "topicSeparator": " "
+  }
+}
