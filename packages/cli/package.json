@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@gitlaw/core": "workspace:*",
-    "@oclif/core": "^4"
+    "@oclif/core": "^4",
+    "js-yaml": "^4"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4",
     "vitest": "^3",
     "typescript": "^5"
   },
