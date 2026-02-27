@@ -23,3 +23,6 @@ export type { ReviewRequest, ReviewRecord } from './workflow/types.js';
 // Audit
 export { AuditLog } from './audit/audit-log.js';
 export type { AuditEntry, AuditEventType } from './audit/types.js';
+
+// Clause library
+export { ClauseLibrary } from './documents/clause-library.js';
