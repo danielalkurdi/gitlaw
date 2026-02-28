@@ -1,0 +1,24 @@
+{
+  "name": "@gitlaw/core",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "isomorphic-git": "^1",
+    "js-yaml": "^4",
+    "mammoth": "^1",
+    "docx": "^9"
+  },
+  "devDependencies": {
+    "vitest": "^3",
+    "@types/js-yaml": "^4",
+    "typescript": "^5"
+  }
+}
